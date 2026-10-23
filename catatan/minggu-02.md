@@ -14,8 +14,7 @@ ditulis dua kali. Keenam tes `Minggu02AsetTest` lulus, ditambah dua tes sendiri 
 - Metode `bisaDipinjam()`, `getJenis()`, dan `hitungDenda()` sengaja tidak saya sentuh karena itu pekerjaan minggu 3 sampai 5.
 
 ## Kendala
-(ISI SENDIRI dengan pengalaman Anda. Contoh yang bisa dijadikan acuan bila memang Anda alami: bingung membedakan
-`isEmpty()` dan `isBlank()` untuk kasus `"   "`, atau lupa bahwa nilai lama harus tetap bila setter menolak input.)
+- sempat ada kendala karena kemarin file sya pindah jadi waktu diuji ada eror
 
 ## Penggunaan AI
 - Alat yang dipakai: Claude (Anthropic)
