@@ -3,6 +3,8 @@ package id.ac.upb.asetpinjam.model;
 /** Minggu 3: aset berupa ruang. Kapasitas harus lebih dari 0 (IllegalArgumentException). */
 public class Ruang extends Aset {
 
+    private static final int MULTIPLIER_DENDA = 1;
+
     private final int kapasitas;
 
     /**
@@ -25,5 +27,9 @@ public class Ruang extends Aset {
         return JenisAset.RUANG;
     }
 
-    // TODO minggu 4: override hitungDenda(int).
+    /** Denda Ruang: hari x 1 x tarif varian. Hari negatif ditolak. */
+    @Override
+    public long hitungDenda(int hariTerlambat) {
+        return dendaDenganMultiplier(hariTerlambat, MULTIPLIER_DENDA);
+    }
 }

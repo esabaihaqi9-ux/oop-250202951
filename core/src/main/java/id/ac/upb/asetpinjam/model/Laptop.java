@@ -3,6 +3,8 @@ package id.ac.upb.asetpinjam.model;
 /** Minggu 3: aset berupa laptop. Spesifikasi dan nomor inventaris tidak boleh kosong. */
 public class Laptop extends Aset {
 
+    private static final int MULTIPLIER_DENDA = 2;
+
     private final String spesifikasi;
     private final String nomorInventaris;
 
@@ -36,5 +38,9 @@ public class Laptop extends Aset {
         return nilai;
     }
 
-    // TODO minggu 4: override hitungDenda(int).
+    /** Denda Laptop: hari x 2 x tarif varian. Hari negatif ditolak. */
+    @Override
+    public long hitungDenda(int hariTerlambat) {
+        return dendaDenganMultiplier(hariTerlambat, MULTIPLIER_DENDA);
+    }
 }

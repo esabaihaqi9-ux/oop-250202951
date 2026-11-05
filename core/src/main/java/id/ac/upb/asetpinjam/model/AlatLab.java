@@ -3,6 +3,8 @@ package id.ac.upb.asetpinjam.model;
 /** Minggu 3: alat laboratorium. Laboratorium tidak boleh kosong; risiko tidak boleh null. */
 public class AlatLab extends Aset {
 
+    private static final int MULTIPLIER_DENDA = 4;
+
     private final String laboratorium;
     private final TingkatRisiko tingkatRisiko;
 
@@ -35,5 +37,9 @@ public class AlatLab extends Aset {
         return JenisAset.ALAT_LAB;
     }
 
-    // TODO minggu 4: override hitungDenda(int).
+    /** Denda Alat laboratorium: hari x 4 x tarif varian. Hari negatif ditolak. */
+    @Override
+    public long hitungDenda(int hariTerlambat) {
+        return dendaDenganMultiplier(hariTerlambat, MULTIPLIER_DENDA);
+    }
 }
