@@ -37,3 +37,14 @@ Tambahkan di sini keputusan lain yang Anda ambil: rumus denda progresif, perubah
   tepat dilakukan di lapisan input, bukan di dalam model.
 - Dampak ke kode: `Aset.pastikanTidakKosong(...)` hanya memvalidasi dan mengembalikan nilai asli.
 - Tes yang membuktikan: `AsetKodeNamaTest.kodeDisimpanApaAdanyaTanpaNormalisasi`.
+
+## A-03: rumus denda progresif (minggu 5)
+- Pertanyaan: bagaimana denda dihitung agar makin berat bila makin lama terlambat?
+- Keputusan: 7 hari pertama sama dengan denda flat. Mulai hari ke-8, tiap hari tambahan dihitung dua kali lipat.
+  Rumus: `progresif(h) = flat(h) + max(0, h - 7) x flat(1)`.
+- Alasan: keterlambatan singkat tetap diperlakukan sama dengan denda flat, sedangkan keterlambatan panjang
+  (aset tidak tersedia bagi peminjam lain) dikenai beban lebih besar. Rumus ini memakai `hitungDenda`, sehingga
+  multiplier jenis aset dan tarif varian ikut otomatis. Tidak pernah di bawah flat, tidak turun saat hari bertambah,
+  dan pada hari ke-30 lebih mahal dari flat.
+- Dampak ke kode: `DendaProgresif.hitung(...)`.
+- Tes yang membuktikan: `Minggu05AbstraksiTest.dendaProgresifMemenuhiSyaratMinimal`.
