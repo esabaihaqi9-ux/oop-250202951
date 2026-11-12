@@ -1,0 +1,134 @@
+---
+title: Class Diagram 1/3 - Paket kontrak dan model
+---
+classDiagram
+    direction TB
+
+    namespace kontrak {
+        class DapatDipinjam {
+            <<interface>>
+            +bisaDipinjam() boolean
+        }
+    }
+
+    namespace model {
+        class Aset {
+            <<abstract>>
+            -String kode
+            -String nama
+            -StatusAset status
+            -Kondisi kondisi
+            +Aset(String kode, String nama)
+            +getKode() String
+            +getNama() String
+            +getStatus() StatusAset
+            +getKondisi() Kondisi
+            +setNama(String nama) void
+            +setStatus(StatusAset status) void
+            +setKondisi(Kondisi kondisi) void
+            +bisaDipinjam() boolean
+            +getJenis()* JenisAset
+            +hitungDenda(int hariTerlambat)* long
+            #dendaDenganMultiplier(int hariTerlambat, int multiplier) long
+            -pastikanTidakKosong(String nilai, String namaField)$ String
+        }
+        class Ruang {
+            -int MULTIPLIER_DENDA$ = 1
+            -int kapasitas
+            +Ruang(String kode, String nama, int kapasitas)
+            +getKapasitas() int
+            +getJenis() JenisAset
+            +hitungDenda(int hariTerlambat) long
+        }
+        class Laptop {
+            -int MULTIPLIER_DENDA$ = 2
+            -String spesifikasi
+            -String nomorInventaris
+            +Laptop(String kode, String nama, String spesifikasi, String nomorInventaris)
+            +getSpesifikasi() String
+            +getNomorInventaris() String
+            +getJenis() JenisAset
+            +hitungDenda(int hariTerlambat) long
+        }
+        class AlatLab {
+            -int MULTIPLIER_DENDA$ = 4
+            -String laboratorium
+            -TingkatRisiko tingkatRisiko
+            +AlatLab(String kode, String nama, String laboratorium, TingkatRisiko tingkatRisiko)
+            +getLaboratorium() String
+            +getTingkatRisiko() TingkatRisiko
+            +getJenis() JenisAset
+            +hitungDenda(int hariTerlambat) long
+        }
+        class Peminjam {
+            <<record>>
+            +String id
+            +String nama
+        }
+        class Peminjaman {
+            -String id
+            -Peminjam peminjam
+            -Aset aset
+            -LocalDateTime mulai
+            -LocalDateTime selesai
+            -StatusPeminjaman status
+            +Peminjaman(String id, Peminjam peminjam, Aset aset, LocalDateTime mulai, LocalDateTime selesai)
+            +getId() String
+            +getPeminjam() Peminjam
+            +getAset() Aset
+            +getMulai() LocalDateTime
+            +getSelesai() LocalDateTime
+            +getStatus() StatusPeminjaman
+            +setStatusDariPenyimpanan(StatusPeminjaman status) void
+            +ubahStatus(StatusPeminjaman baru) void
+        }
+        class JenisAset {
+            <<enumeration>>
+            RUANG
+            LAPTOP
+            ALAT_LAB
+        }
+        class StatusAset {
+            <<enumeration>>
+            TERSEDIA
+            DIPINJAM
+            RUSAK
+        }
+        class Kondisi {
+            <<enumeration>>
+            BAIK
+            RUSAK_RINGAN
+            RUSAK_BERAT
+        }
+        class TingkatRisiko {
+            <<enumeration>>
+            RENDAH
+            SEDANG
+            TINGGI
+        }
+        class StatusPeminjaman {
+            <<enumeration>>
+            DIAJUKAN
+            DISETUJUI
+            DITOLAK
+            DIBATALKAN
+            DIPINJAM
+            TERLAMBAT
+            DIKEMBALIKAN
+        }
+    }
+
+    DapatDipinjam <|.. Aset : implements
+
+    Aset <|-- Ruang
+    Aset <|-- Laptop
+    Aset <|-- AlatLab
+
+    Aset "*" --> "1" StatusAset : status
+    Aset "*" --> "1" Kondisi : kondisi
+    AlatLab "*" --> "1" TingkatRisiko : tingkatRisiko
+    Aset ..> JenisAset : getJenis()
+
+    Peminjaman "*" --> "1" Peminjam : peminjam
+    Peminjaman "*" --> "1" Aset : aset
+    Peminjaman "*" --> "1" StatusPeminjaman : status

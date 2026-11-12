@@ -79,10 +79,11 @@ public abstract class Aset implements DapatDipinjam {
         return status == StatusAset.TERSEDIA && kondisi != Kondisi.RUSAK_BERAT;
     }
 
-    /** TODO minggu 3: dioverride tiap subclass agar mengembalikan jenis yang benar. */
-    public JenisAset getJenis() {
-        throw new UnsupportedOperationException("TODO minggu 3");
-    }
+    /**
+     * Jenis aset. Abstrak (minggu 6, refactor LSP): setiap subclass wajib menjawabnya, sehingga
+     * tidak ada lagi Aset yang melempar UnsupportedOperationException saat dipakai sebagai Aset.
+     */
+    public abstract JenisAset getJenis();
 
     /** Denda keterlambatan. Dioverride tiap subclass sesuai multiplier jenisnya (docs/aturan-bisnis.md). */
     public abstract long hitungDenda(int hariTerlambat);

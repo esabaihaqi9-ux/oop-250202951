@@ -1,0 +1,71 @@
+---
+title: Class Diagram 3/3 - Paket dao
+---
+classDiagram
+    direction TB
+
+    namespace dao {
+        class AsetDAO {
+            <<interface>>
+            +simpan(Aset aset) void
+            +cariByKode(String kode) Optional~Aset~
+            +semua() List~Aset~
+            +perbarui(Aset aset) void
+            +hapus(String kode) boolean
+        }
+        class PeminjamanDAO {
+            <<interface>>
+            +simpan(Peminjaman peminjaman) void
+            +cariById(String id) Optional~Peminjaman~
+            +perbaruiStatus(String id, StatusPeminjaman status) boolean
+        }
+        class JdbcAsetDAO {
+            -Supplier~Connection~ sumberKoneksi
+            +JdbcAsetDAO(Supplier~Connection~ sumberKoneksi)
+            +simpan(Aset aset) void
+            +cariByKode(String kode) Optional~Aset~
+            +semua() List~Aset~
+            +perbarui(Aset aset) void
+            +hapus(String kode) boolean
+        }
+        class JdbcPeminjamanDAO {
+            -Supplier~Connection~ sumberKoneksi
+            -AsetDAO asetDao
+            +JdbcPeminjamanDAO(Supplier~Connection~ sumberKoneksi, AsetDAO asetDao)
+            +simpan(Peminjaman peminjaman) void
+            +cariById(String id) Optional~Peminjaman~
+            +perbaruiStatus(String id, StatusPeminjaman status) boolean
+        }
+        class Koneksi {
+            <<final>>
+            -Koneksi()
+            +baru()$ Connection
+        }
+    }
+
+    namespace model {
+        class Aset {
+            <<abstract>>
+        }
+        class Peminjaman
+        class StatusPeminjaman {
+            <<enumeration>>
+        }
+    }
+
+    namespace exception {
+        class AsetPinjamException
+        class DataAksesException
+    }
+
+    AsetDAO <|.. JdbcAsetDAO
+    PeminjamanDAO <|.. JdbcPeminjamanDAO
+    AsetPinjamException <|-- DataAksesException
+
+    JdbcPeminjamanDAO "*" --> "1" AsetDAO : asetDao
+    AsetDAO ..> Aset
+    PeminjamanDAO ..> Peminjaman
+    PeminjamanDAO ..> StatusPeminjaman
+    Koneksi ..> DataAksesException : throws
+    JdbcAsetDAO ..> Koneksi : sumber koneksi
+    JdbcPeminjamanDAO ..> Koneksi : sumber koneksi

@@ -1,0 +1,119 @@
+---
+title: Class Diagram 2/3 - Paket denda, jadwal, katalog, factory, config, exception
+---
+classDiagram
+    direction TB
+
+    namespace kontrak {
+        class AturanDenda {
+            <<interface>>
+            +hitung(Aset aset, int hariTerlambat) long
+        }
+    }
+
+    namespace denda {
+        class DendaFlat {
+            +hitung(Aset aset, int hariTerlambat) long
+        }
+        class DendaProgresif {
+            ~int BATAS_HARI_NORMAL$ = 7
+            +hitung(Aset aset, int hariTerlambat) long
+        }
+        class LayananDenda {
+            +LayananDenda(AturanDenda aturan)
+            +hitung(Aset aset, int hariTerlambat) long
+        }
+    }
+
+    namespace jadwal {
+        class JadwalPeminjaman {
+            -List~Peminjaman~ daftar
+            -int kuotaLaptop
+            +JadwalPeminjaman(int kuotaLaptop)
+            #kuotaLaptop() int
+            #daftarMutable() List~Peminjaman~
+            +tambah(Peminjaman p) void
+            +bentrok(Peminjaman baru) boolean
+            +semuaUrutMulai() List~Peminjaman~
+            +perAset() Map#lt;String, List#lt;Peminjaman#gt;#gt;
+            +hapus(String id) boolean
+            +ajukan(Peminjaman baru) void
+        }
+    }
+
+    namespace katalog {
+        class KatalogAset {
+            -List~Aset~ daftar
+            +tambah(Aset aset) void
+            +semua() List~Aset~
+            +cari(String kata) List~Aset~
+            +cari(String kata, JenisAset jenis) List~Aset~
+        }
+    }
+
+    namespace factory {
+        class AsetFactory {
+            <<final>>
+            -AsetFactory()
+            +buat(JenisAset jenis, String kode, String nama, String... atribut)$ Aset
+        }
+    }
+
+    namespace config {
+        class Varian {
+            <<final>>
+            -Varian aktif$
+            +String nim
+            +String nama
+            +int dendaPerHari
+            +int batasDurasiJam
+            +int kuotaLaptop
+            -Varian(String nim, String nama)
+            +dariNim(String nim, String nama)$ Varian
+            +aktif()$ Varian
+        }
+    }
+
+    namespace model {
+        class Aset {
+            <<abstract>>
+        }
+        class Peminjaman
+        class JenisAset {
+            <<enumeration>>
+        }
+    }
+
+    namespace exception {
+        class AsetPinjamException {
+            <<RuntimeException>>
+        }
+        class KuotaHabisException
+        class PeminjamanBentrokException
+        class StatusTidakSahException
+        class DataAksesException
+    }
+
+    AturanDenda <|.. DendaFlat
+    AturanDenda <|.. DendaProgresif
+    LayananDenda ..> AturanDenda : konstruktor (disuntik)
+
+    DendaFlat ..> Aset : hitungDenda()
+    DendaProgresif ..> Aset : hitungDenda()
+    LayananDenda ..> Aset
+    Aset ..> Varian : aktif()
+
+    JadwalPeminjaman "1" o-- "0..*" Peminjaman : daftar
+    KatalogAset "1" o-- "0..*" Aset : daftar
+    KatalogAset ..> JenisAset
+    AsetFactory ..> Aset : membuat
+    AsetFactory ..> JenisAset
+
+    AsetPinjamException <|-- DataAksesException
+    AsetPinjamException <|-- KuotaHabisException
+    AsetPinjamException <|-- PeminjamanBentrokException
+    AsetPinjamException <|-- StatusTidakSahException
+
+    JadwalPeminjaman ..> PeminjamanBentrokException : throws (minggu 9)
+    JadwalPeminjaman ..> KuotaHabisException : throws (minggu 9)
+    Peminjaman ..> StatusTidakSahException : throws (minggu 9)

@@ -1,0 +1,29 @@
+---
+title: Sequence Diagram Pengajuan Peminjaman (sukses dan bentrok)
+---
+sequenceDiagram
+    autonumber
+    actor P as Peminjam
+    participant PM as Peminjaman
+    participant J as JadwalPeminjaman
+    participant E as PeminjamanBentrokException
+
+    P->>PM: new Peminjaman(id, peminjam, aset, mulai, selesai)
+    Note right of PM: selesai harus setelah mulai,<br/>jika tidak IllegalArgumentException.<br/>Status awal DIAJUKAN.
+    PM-->>P: peminjaman
+
+    P->>+J: ajukan(peminjaman)
+    J->>J: bentrok(peminjaman)
+    Note right of J: true jika ASET SAMA dan rentang<br/>waktu tumpang tindih dengan<br/>peminjaman yang sudah ada.
+
+    alt Skenario sukses: bentrok(peminjaman) == false
+        J->>J: tambah(peminjaman)
+        J-->>-P: selesai (void)
+    else Skenario bentrok: bentrok(peminjaman) == true
+        J->>E: new PeminjamanBentrokException()
+        E-->>J: exception
+        J--)P: throw PeminjamanBentrokException
+        Note over P,J: peminjaman TIDAK ditambahkan<br/>ke daftar jadwal.
+    end
+
+    Note over J: ajukan() dan bentrok() masih TODO (bentrok minggu 7, ajukan minggu 9).<br/>Alur mengikuti kontrak Javadoc. Pemeriksaan kuota laptop<br/>(KuotaHabisException) menyusul di minggu 9.
